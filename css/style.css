@@ -17,8 +17,6 @@ li {
 }
 
 .gallery-image {
-    width: 360px;
-    height: 200px;
     flex-shrink: 0;
     cursor: zoom-in;
 }

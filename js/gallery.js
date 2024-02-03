@@ -64,34 +64,48 @@ const images = [
     },
   ];
 
-const container = document.querySelector('.gallery');
+const container = document.querySelector(".gallery");
 let lightbox;
 
-container.addEventListener('click', (event) => {
-    event.preventDefault();
-    if (event.target.classList.contains("gallery-image")) {
-        const originalSrc  = event.target.dataset.source;
-        lightbox = basicLightbox.create( `<img width="1400" height="900" src="${originalSrc}">`);
-        lightbox.show();
-        document.addEventListener('keydown', handleKeyDown);
+container.addEventListener("click", (event) => {
+  event.preventDefault();
+  const originalSrc = event.target.dataset.source;
+  
+  if (event.target.classList.contains("gallery-image")) {
+      showProductModal(originalSrc);
     }
 });
 
-function handleKeyDown(event) {
-  if (event.key === "Escape" || event.code === "Escape") {
-    closeLightbox();
+function showProductModal(originalSrc) {
+  lightbox = basicLightbox.create(`<img width="1400" height="900" src="${originalSrc}">`,
+      {
+      onShow: () => {
+        console.log("ADD LISTENER");
+        document.addEventListener("keydown", handleKeyDown);
+      },
+      onClose: () => {
+        console.log("REMOVE LISTENER");
+        document.removeEventListener("keydown", handleKeyDown);
+      },
+    },
+  );
+
+  lightbox.show();
+
+  function handleKeyDown(event) {
+    if (event.key === "Escape" || event.code === "Escape") {
+      closeLightbox();
+    }
   }
 }
 
 function closeLightbox() {
   if (lightbox && lightbox.visible()) {
     lightbox.close();
-    document.removeEventListener("keydown", handleKeyDown);
   }
 }
 
-
-function imagesTemlates() {
+function imagesTemplates() {
     const result = images.map(image => {
         return `<li class="gallery-item">
                     <a class="gallery-link" href="${image.original}">
@@ -99,13 +113,14 @@ function imagesTemlates() {
                             class="gallery-image"
                             src="${image.preview}"
                             data-source="${image.original}"
-                            alt="${image.description}" 
+                            alt="${image.description}"
+                            style="width: 360px; height: 200px;"
                         />
                     </a>
                  </li>`;
-    }).join('\n\n');
+    }).join("\n\n");
 
    container.innerHTML = result;
 }
-imagesTemlates() 
+imagesTemplates() 
 
